@@ -26,6 +26,7 @@ Servo servo;
 Servo servo2;
 Servo servo3;
 Servo servo4;
+int low = 0;
 int count[4] = {
   0,0,0,0
 };
@@ -43,6 +44,8 @@ int kee[16] = {
   7,8,9,0,
   0,0,0,0
 };
+int addres_swidth[] = {0,5,10,15};
+int memory = 2;
 int counter = 0;
 int swish = 0, swish2 = 0, swish3 = 0, swish4 = 0, check = 0, check2 = 0, check3 = 0, check4 = 0;
 char keypad1 = 'n', keypad2 = 'n', keypad3 = 'n', keypad4 = 'n', selec = 'n';
@@ -60,7 +63,7 @@ char Key = KEYS[keyvalue];
 void setup () {
   Serial.begin(9600);
   
- 
+  memory = EEPROM.read(4);
   attachInterrupt(digitalPinToInterrupt(interruptPin), keypadRead,FALLING);
     
   lcd.begin(16,2);
@@ -93,15 +96,41 @@ void setup () {
   servo2.attach(9);
   servo3.attach(10);
   servo4.attach(11);
-  servo.write(check*180);
-  servo2.write(check2*180);
-  servo3.write(check3*180);
-  servo4.write(check4*180);
+  
   
   pinMode(pin_counter1, INPUT);
   pinMode(pin_counter2, INPUT);
   pinMode(pin_counter3, INPUT);
   pinMode(pin_counter4, INPUT);
+  if(memory!= 3)
+  {
+    for(int i =0; i<4; i++)
+          {
+            count[i] = 0;
+            check = 0;
+            check2 = 0;
+            check3 = 0;
+            check4 = 0;
+            
+          }memory = 3;
+            
+  }
+  else if(memory==3)
+  {
+    for(int i =0; i<4; i++)
+          {
+            count[i] = EEPROM.read(i);
+            
+          }
+          check = EEPROM.read(5);
+  check2 = EEPROM.read(6);
+  check3 = EEPROM.read(7);
+  check4 = EEPROM.read(8);
+  }
+  servo.write(check*180);
+  servo2.write(check2*180);
+  servo3.write(check3*180);
+  servo4.write(check4*180);
   
 //  Serial.println("99");
   
@@ -111,7 +140,35 @@ void setup () {
   //
 
 void loop() {
-  
+  if(low == 0)
+  {
+    memory = EEPROM.read(4);
+    if(memory!= 3)
+  {
+    for(int i =0; i<4; i++)
+          {
+            count[i] = 0;
+            check = 0;
+            check2 = 0;
+            check3 = 0;
+            check4 = 0;
+            
+          }memory = 3;
+            
+  }
+  else if(memory==3)
+  {
+    for(int i =0; i<4; i++)
+          {
+            count[i] = EEPROM.read(i);
+            
+          }
+          check = EEPROM.read(5);
+  check2 = EEPROM.read(6);
+  check3 = EEPROM.read(7);
+  check4 = EEPROM.read(8);
+  }low = 1;
+  }
   int isCount1 = digitalRead(pin_counter1); 
   int isCount2 = digitalRead(pin_counter2); 
   int isCount3 = digitalRead(pin_counter3); 
@@ -119,14 +176,14 @@ void loop() {
    
   if(isCount1 == 1)
   {
-      count[0]++;
+      count[0]+=1;
       count4 =count[0] + count[1] + count[2] + count[3];
       lcd.setCursor(13,1);
       lcd.print(count4);
       
       lcd.setCursor(2,0);
       lcd.print(count[0]);
-      delay(1000);
+      delay(500);
   }
   if(isCount2 == 1)
   {
@@ -137,7 +194,7 @@ void loop() {
       
       lcd.setCursor(9,0);
       lcd.print(count[1]);
-      delay(1000);
+      delay(500);
       
   }
   if(isCount3 == 1)
@@ -149,7 +206,7 @@ void loop() {
       
       lcd.setCursor(2,1);
       lcd.print(count[2]);
-      delay(1000);
+      delay(500);
       
   }
   if(isCount4 == 1)
@@ -161,7 +218,7 @@ void loop() {
       
       lcd.setCursor(9,1);
       lcd.print(count[3]);
-      delay(1000);
+      delay(500);
       
   }
   
@@ -183,7 +240,7 @@ void loop() {
       {
         numpad = 1;
       }
-      else if(check == 0)
+      if(check == 0)
       {
         servo.write(180);
         check = 1;
@@ -242,7 +299,7 @@ void loop() {
       {
         numpad2 = 1;
       }
-      else if(check2 == 0)
+      if(check2 == 0)
       {
         servo2.write(180);
         check2 = 1;
@@ -302,7 +359,7 @@ void loop() {
       {
         numpad3 = 1;
       }
-      else if(check3 == 0)
+      if(check3 == 0)
       {
         servo3.write(180);
         check3 = 1;
@@ -360,7 +417,7 @@ void loop() {
       {
         numpad4 = 1;
       }
-      else if(check4 == 0)
+      if(check4 == 0)
       {
         servo4.write(180);
         check4 = 1;
@@ -468,7 +525,7 @@ printState=true;//จะมีหรือไม่ขึ้นอยู่ก�
         }
         
 
-        else if(KEYS[keyValue] == '#')
+        else if(KEYS[keyValue] == '#' && counter != 3)
         {
             keypad1 = 'n';
             keypad2 = 'n';
@@ -484,20 +541,31 @@ printState=true;//จะมีหรือไม่ขึ้นอยู่ก�
             swish3 = 0;
             swish4 = 0;
             counter++;
-            Serial.println(counter);
+            int numx = EEPROM.read(0);
+            Serial.println(numx);
         }
         if(counter == 3)
         {
           Serial.println("123");
-          EEPROM.update(&count[0], count[0]);
-          EEPROM.update(&count[1], count[1]);
-          EEPROM.update(&count[2], count[2]);
-          EEPROM.update(&count[3], count[3]);
-          EEPROM.update(&count4, count4);
-          EEPROM.update(&check, check);
-          EEPROM.update(&check2, check2);
-          EEPROM.update(&check3, check3);
-          EEPROM.update(&check4, check4);
+          int addres_swidth[] = {0,5,10,15};
+          for(int i =0; i<4; i++)
+          {
+            EEPROM.update(i, count[i]);
+          }
+          
+          EEPROM.update(4, memory);
+          EEPROM.update(5, check);
+          EEPROM.update(6, check2);
+          EEPROM.update(7, check3);
+          EEPROM.update(8, check4);
+          int num = EEPROM.read(1);
+          int num1 = EEPROM.read(2);
+          int num2 = EEPROM.read(4);
+          Serial.println(num);
+          Serial.println(num1);
+          Serial.println(num2);
+          
+          
           counter = 0;
         }
         else if(KEYS[keyValue] == '*' && keypad1 == 'A')
