@@ -26,6 +26,8 @@
  6. เมื่อใช้งานเสร็จให้ถอดตัวจ่ายไฟออก
  
  ปล. กระปุกออมสินอเนกประสงค์ต้องใช้ Power Bank เป็นตัวจ่ายไฟ
+ 
+ ![](https://github.com/Napatpan/Multi-Functional-Money-Box-/blob/master/Poster/2.jpg)
 
 ***
 
