@@ -75,3 +75,5 @@ D = 10 บาท
 คณะเทคโนโลยีสารสนเทศ
 สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง
 ***
+
+[![Multi-Functional Money Box]](https://www.youtube.com/watch?v=w796uZqj4PA&t=6s)
